@@ -1,0 +1,10 @@
+django
+Pillow>=9.0.0
+djangorestframework
+django-model-utils # para heredar de los modelos que nos proveen caracteristicas como: created, modified, is_remove
+django-environ  # para las variables de entorno de django
+unipath
+pre-commit # para cumplir con estandares de codigo
+drf-yasg # para la documentacion del codigo
+pudb # para hacer debugger  con import pudb; pudb.set_trace()
+pytz

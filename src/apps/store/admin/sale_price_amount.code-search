@@ -1,0 +1,49 @@
+# Query: sale_price_amount
+# ContextLines: 1
+
+11 resultados - Archivos de 5
+
+src/apps/store/admin/product.py:
+  39          if price:
+  40:             price=price.sale_price
+  41          else:
+
+  48      ordering = ("product__name","created")
+  49:     list_display=("purchase_price_amount","sale_price","product")
+  50
+
+  84      def price_per_product(self,obj):
+  85:         return obj.price_product.sale_price
+  86
+
+src/apps/store/api/v1/serializers/product.py:
+  11  class ProductInfoSerializer(serializers.ModelSerializer):
+  12:     sale_price = serializers.FloatField(read_only=True)
+  13
+
+  15          model = Product
+  16:         fields = ['name', 'stock', 'sale_price']
+  17
+
+src/apps/store/api/v1/views/product.py:
+  24          response_data = serializer.data
+  25:         response_data['sale_price'] = latest_price.sale_price
+  26          return Response(response_data)
+
+  52
+  53:                 sale_price_product=price_product.sale_price
+  54                  amount_product=sale_price_product*quantity
+
+src/apps/store/migrations/0001_initial.py:
+  82                  ('purchase_price_amount', models.FloatField(verbose_name='Purchase price amount: ')),
+  83:                 ('sale_price', models.FloatField(verbose_name='Sale price amount: ')),
+  84                  ('date_purchase', models.DateField(verbose_name='Date purchase: ')),
+
+src/apps/store/models/product.py:
+  23      purchase_price_amount = models.FloatField(verbose_name="Purchase price amount: ")
+  24:     sale_price = models.FloatField(verbose_name="Sale price amount: ")
+  25      product = models.ForeignKey(Product, verbose_name="Product: ", on_delete=models.CASCADE, related_name='prices')
+
+  29      def __str__(self):
+  30:         return f"{self.product} - Purchase: {self.purchase_price_amount} - Sale: {self.sale_price}"
+  31

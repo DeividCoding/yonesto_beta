@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}UNICAPP{% endblock %}
+{% block content %}
+
+<div class="row my-5">
+    <div class="col-4 text-center">
+      <a href="{% url 'schema-redoc' %}" class="btn big-btn">Documentation REDOC</a>
+    </div>
+    <div class="col-4 text-center">
+      <a href="{% url 'schema-swagger-ui' %}" class="btn big-btn">API</a>
+    </div>
+    <div class="col-4 text-center">
+      <a href="{% url 'admin:index' %}"  class="btn big-btn">Admin</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 text-center">
+      <img
+        src="{% static 'img/PORTADA.jpg' %}"
+        alt="Foto de portada"
+        class="img-fluid"
+        style="max-width: 50%;"
+      />
+    </div>
+  </div>
+  <div class="row my-5">
+    <div class="col-12 text-center">
+      <h2>programmers</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3 text-center">
+      <img src="{% static 'img/LISS.jpg' %}" alt="Foto programador 1" class="developer-img rounded-circle" />
+      <p>Lisette HG</p>
+    </div>
+    <div class="col-3 text-center">
+      <img src="{% static 'img/RONI.jpg' %}" alt="Foto programador 2" class="developer-img rounded-circle" />
+      <p>Roni Hernández</p>
+    </div>
+    <div class="col-3 text-center">
+      <img src="{% static 'img/URIEL.jpg' %}" alt="Foto programador 3" class="developer-img rounded-circle" />
+      <p>Uriel Castillo</p>
+    </div>
+    <div class="col-3 text-center">
+      <img src="{% static 'img/ANDRES.jpg' %}" alt="Foto programador 4" class="developer-img rounded-circle" />
+      <p>Andres Serna</p>
+    </div>
+  </div>
+
+
+{% endblock %}

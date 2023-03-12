@@ -1,0 +1,9 @@
+django
+Pillow>=9.0.0
+djangorestframework
+django-model-utils
+django-environ
+unipath
+mysqlclient==1.4.6
+drf-yasg
+pytz

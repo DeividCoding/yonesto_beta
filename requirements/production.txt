@@ -1,0 +1,8 @@
+django
+Pillow>=9.0.0
+djangorestframework
+django-model-utils
+django-environ
+unipath
+drf-yasg
+pytz

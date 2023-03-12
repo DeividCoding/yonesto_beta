@@ -1,0 +1,80 @@
+<!--
+    Pié de página
+    iconos: https://fontawesome.com/v4.7/icons/
+    https://www.w3schools.com/bootstrap/bootstrap_ref_js_modal.asp   abrir modals...
+
+-->
+
+{% load static %}
+
+<footer class="footer text-faded text-center py-5">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <div class="container">
+      <p class="m-0">
+
+          <a href="https://www.facebook.com/UNICAFI" class="link">
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+          </span>
+          </a>
+
+
+          <a data-toggle="modal" href="#modalNumeroTelefono" >
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa fa-phone fa-stack-1x fa-inverse"></i>
+          </span>
+          </a>
+
+          <a data-toggle="modal" href="#modalCorreo" >
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+          </span>
+          </a>
+
+      </p>
+
+      <p class="m-0 mbt1">&copy; UNICAPP </p>
+  </div>
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalNumeroTelefono" tabindex="-1" role="dialog" aria-labelledby="modalNumeroTelefono" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalNumeroTelefono">Numero de telefono</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          55-41-85-67-59
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="modalCorreo" tabindex="-1" role="dialog" aria-labelledby="modalCorreo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCorreo">Correo electronico</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          unica@gmail.com
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</footer>
