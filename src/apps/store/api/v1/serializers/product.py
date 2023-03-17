@@ -93,8 +93,8 @@ class BuyClientSerializer(serializers.Serializer):
             if payment_client > 0:
                 remaining_amount_product -= payment_client
                 if remaining_amount_product <= 0:
-                    remaining_amount_product = 0
                     payment_client = abs(remaining_amount_product)
+                    remaining_amount_product = 0
                 else:
                     payment_client = 0
                     remaining_amount_buy_total = abs(remaining_amount_product)
