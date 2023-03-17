@@ -14,14 +14,14 @@ class UserClient(BaseModelClass):
 
 @receiver(pre_save, sender=UserClient)
 def signal_pre_save_contract(sender, instance, **kwargs):
-    query_for_ger_user_client = UserClient.objects.filter(pk=instance.pk)
+    query_for_ger_user_client = UserClient.available_objects.filter(pk=instance.pk)
     if not query_for_ger_user_client.exists():
         try:
-            user_client_with_code_bigger = UserClient.objects.latest("code")
+            user_client_with_code_bigger = UserClient.all_objects.latest("code")
         except UserClient.DoesNotExist:
             user_client_with_code_bigger = None
         if user_client_with_code_bigger is None:
             instance.code = 10000
         else:
             last_code = user_client_with_code_bigger.code
-            instance.code = last_code + 1
+            instance.code = last_code + 8
