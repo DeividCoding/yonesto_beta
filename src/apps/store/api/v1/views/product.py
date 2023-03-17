@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,6 +18,8 @@ from ..serializers.product import (
 
 
 class ProductInfoView(generics.RetrieveAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = ProductInfoSerializer
     queryset = Product.objects.all()
 
@@ -38,6 +42,8 @@ class ProductInfoView(generics.RetrieveAPIView):
 
 
 class BuyClientAPIView(generics.CreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = BuyClientSerializer
     queryset = Buy.objects.all()
 
