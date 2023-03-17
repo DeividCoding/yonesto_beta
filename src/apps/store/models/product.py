@@ -1,5 +1,6 @@
 from common.abstract_models import BaseModelClass
 from django.db import models
+from django.db.models import Sum
 
 from .users import UserClient
 
@@ -54,6 +55,18 @@ class Buy(BaseModelClass):
 
     def __str__(self):
         return f"{self.date_purchase} - {self.user_client.name} - Total cost: {self.amount}"
+
+    @staticmethod
+    def calculate_amounts():
+        total_amount = Buy.objects.all().aggregate(Sum("amount"))["amount__sum"] or 0
+        total_remaining_amount = (
+            Buy.objects.all().aggregate(Sum("remaining_amount"))[
+                "remaining_amount__sum"
+            ]
+            or 0
+        )
+        total_difference = total_amount - total_remaining_amount
+        return total_amount, total_remaining_amount, total_difference
 
 
 class BuyProduct(BaseModelClass):

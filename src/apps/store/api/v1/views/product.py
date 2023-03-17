@@ -1,14 +1,18 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework import generics, status
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.store.models.product import Buy, BuyProduct, PriceProduct, Product
-from apps.store.models.users import UserClient
+from apps.store.models.product import Buy, PriceProduct, Product
 
-from ..serializers.product import BuyClientSerializer, ProductInfoSerializer
+from ..serializers.product import (
+    BuyClientSerializer,
+    BuyTotalsSerializer,
+    ProductInfoSerializer,
+)
 
 
 class ProductInfoView(generics.RetrieveAPIView):
@@ -36,3 +40,22 @@ class ProductInfoView(generics.RetrieveAPIView):
 class BuyClientAPIView(generics.CreateAPIView):
     serializer_class = BuyClientSerializer
     queryset = Buy.objects.all()
+
+
+class BuyTotalsAPI(APIView):
+    @swagger_auto_schema(
+        operation_summary="Get Buy Totals",
+        responses={
+            200: BuyTotalsSerializer(),
+        },
+    )
+    def get(self, request, format=None):
+        total_amount, total_remaining_amount, total_difference = Buy.calculate_amounts()
+        serializer = BuyTotalsSerializer(
+            {
+                "total_amount": total_amount,
+                "total_remaining_amount": total_remaining_amount,
+                "total_recovered": total_difference,
+            }
+        )
+        return Response(serializer.data)

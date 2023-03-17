@@ -9,4 +9,5 @@ from . import views
 urlpatterns = [
     path("product/info/<code>/", views.ProductInfoView.as_view(), name="product-info"),
     path("buy/create/", views.BuyClientAPIView.as_view(), name="buy-create"),
+    path("buy/info/", views.BuyTotalsAPI.as_view(), name="buy-info"),
 ]

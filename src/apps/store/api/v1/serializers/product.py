@@ -9,6 +9,13 @@ from apps.store.models.product import Buy, BuyProduct, PriceProduct, Product
 from apps.store.models.users import UserClient
 
 
+class BuyTotalsSerializer(serializers.Serializer):
+    # total sale money
+    total_amount = serializers.FloatField()
+    total_remaining_amount = serializers.FloatField()
+    total_recovered = serializers.FloatField()
+
+
 class BuySerializer(serializers.ModelSerializer):
     class Meta:
         model = Buy
