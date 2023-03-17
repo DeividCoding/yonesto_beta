@@ -1,11 +1,12 @@
 from django.contrib import admin
 
+from apps.common.admin import BaseAdmin
 from apps.users.models import User
 
 # Register your models here.
 
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseAdmin):
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
