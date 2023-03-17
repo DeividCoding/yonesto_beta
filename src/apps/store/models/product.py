@@ -12,10 +12,21 @@ class SupplierProduct(BaseModelClass):
         return f"{self.name}"
 
 
+def product_directory_path(instance, filename):
+
+    # File will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return "product_{0}/{1}".format(instance.id, filename)
+
+
 class Product(BaseModelClass):
     code = models.CharField(verbose_name="Code:", max_length=100, unique=True)
     name = models.CharField(verbose_name="Name:", max_length=50, unique=True)
     stock = models.IntegerField(verbose_name="Stock: ")
+    image = models.ImageField(
+        upload_to=product_directory_path,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.name}"
