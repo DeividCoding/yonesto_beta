@@ -9,27 +9,45 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import json
 import os
 import sys
 
-import environ
+# import environ
 import pytz
-from unipath import Path
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+# from unipath import Path
+from django.core.exceptions import ImproperlyConfigured
+
+# env = environ.Env(
+#     # set casting, default value
+#     DEBUG=(bool, False)
+# )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).ancestor(3)
+# BASE_DIR = Path(__file__).ancestor(3)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Add apps folder to path
-sys.path.append(BASE_DIR.child("apps"))
+
+# sys.path.append(BASE_DIR.child("apps"))
+sys.path.append(os.path.join(BASE_DIR, "apps"))
 
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, "config", "settings", ".env"))
+# environ.Env.read_env(os.path.join(BASE_DIR, "config", "settings", ".env"))
+
+
+with open(os.path.join(BASE_DIR, "config", "settings", "secret.json")) as f:
+    FILE_SECRET = json.loads(f.read())
+
+
+def env(secret_name):
+    try:
+        return FILE_SECRET[secret_name]
+    except Exception as e:
+        msg = f"la variable {SECRET_KEY} no existe, error: {e}"
+        raise ImproperlyConfigured(msg)
 
 
 # Quick-start development settings - unsuitable for production
@@ -71,7 +89,8 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR.child("templates")],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        # "DIRS": [  os.path.join(BASE_DIR, "templates")  ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

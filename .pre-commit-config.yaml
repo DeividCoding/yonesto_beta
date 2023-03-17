@@ -24,7 +24,7 @@ repos:
         exclude: "template.yaml"
       - id: debug-statements
       - id: pretty-format-json
-        exclude: events/event.json
+        exclude: src/config/settings/secret.json
       - id: detect-private-key
       - id: fix-encoding-pragma
         args: [--remove]
