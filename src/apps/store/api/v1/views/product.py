@@ -17,23 +17,40 @@ from ..serializers.product import (
 )
 
 
+class ProductInfoListView(generics.ListAPIView):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    serializer_class = ProductInfoSerializer
+    queryset = Product.available_objects.all()
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        # Opcional: incluir información adicional en la respuesta
+        for data in serializer.data:
+            latest_price = PriceProduct.available_objects.filter(
+                product=data["id"]
+            ).latest("date_purchase")
+            data["sale_price"] = latest_price.sale_price
+
+        return Response(serializer.data)
+
+
 class ProductInfoView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProductInfoSerializer
-    queryset = Product.objects.all()
+    queryset = Product.available_objects.all()
 
     def get_object(self):
         code = self.kwargs.get("code")
         return get_object_or_404(Product, code=code)
 
-    def get_serializer_class(self):
-        return self.serializer_class
-
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        latest_price = PriceProduct.objects.filter(product=instance).latest(
+        latest_price = PriceProduct.available_objects.filter(product=instance).latest(
             "date_purchase"
         )
         data = serializer.data
@@ -45,7 +62,7 @@ class BuyClientAPIView(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = BuyClientSerializer
-    queryset = Buy.objects.all()
+    queryset = Buy.available_objects.all()
 
 
 class BuyTotalsAPI(APIView):
