@@ -6,3 +6,4 @@ django-environ
 unipath
 drf-yasg
 pytz
+django-cors-headers

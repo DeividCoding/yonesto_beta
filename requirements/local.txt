@@ -8,3 +8,4 @@ pre-commit # para cumplir con estandares de codigo
 drf-yasg # para la documentacion del codigo
 pudb # para hacer debugger  con import pudb; pudb.set_trace()
 pytz
+django-cors-headers # administrar que dominios pueden consultar la API
