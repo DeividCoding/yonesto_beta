@@ -96,3 +96,30 @@ class BuyProduct(BaseModelClass):
 
     def __str__(self):
         return f"{self.buy.date_purchase} - {self.product.name} - Amount: {self.amount} - Remaining amount: {self.remaining_amount}"
+
+    @staticmethod
+    def calculate_amounts():
+        list_buy_produts = BuyProduct.available_objects.all()
+        total_expected_revenue = 0
+        for buy_product in list_buy_produts:
+            price_product = buy_product.price_product
+            quantity = buy_product.quantity
+            purchase_price = price_product.purchase_price
+            sale_price = price_product.sale_price
+            expected_revenue = (sale_price - purchase_price) * quantity
+            total_expected_revenue += expected_revenue
+
+        list_products = Product.available_objects.all()
+
+        total_potential_revenue = 0
+        for product in list_products:
+            price_product = product.prices.latest("id")
+            stock = product.stock
+            purchase_price = price_product.purchase_price
+            sale_price = price_product.sale_price
+            potential_revenue = (sale_price - purchase_price) * stock
+            total_potential_revenue += potential_revenue
+
+        total_revenue = total_expected_revenue + total_potential_revenue
+
+        return total_expected_revenue, total_potential_revenue, total_revenue

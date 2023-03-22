@@ -16,6 +16,13 @@ class BuyTotalsSerializer(serializers.Serializer):
     total_recovered = serializers.FloatField()
 
 
+class RevenueTotalsSerializer(serializers.Serializer):
+    # total sale money
+    total_expected_revenue = serializers.FloatField()
+    total_potential_revenue = serializers.FloatField()
+    total_revenue = serializers.FloatField()
+
+
 class BuySerializer(serializers.ModelSerializer):
     class Meta:
         model = Buy

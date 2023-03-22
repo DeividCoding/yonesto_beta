@@ -12,8 +12,10 @@ from apps.store.models.product import Buy, PriceProduct, Product
 
 from ..serializers.product import (
     BuyClientSerializer,
+    BuyProduct,
     BuyTotalsSerializer,
     ProductInfoSerializer,
+    RevenueTotalsSerializer,
 )
 
 
@@ -79,6 +81,29 @@ class BuyTotalsAPI(APIView):
                 "total_amount": total_amount,
                 "total_remaining_amount": total_remaining_amount,
                 "total_recovered": total_difference,
+            }
+        )
+        return Response(serializer.data)
+
+
+class RevenueTotalAPI(APIView):
+    @swagger_auto_schema(
+        operation_summary="Get total revenue",
+        responses={
+            200: RevenueTotalsSerializer(),
+        },
+    )
+    def get(self, request, format=None):
+        (
+            total_expected_revenue,
+            total_potential_revenue,
+            total_revenue,
+        ) = BuyProduct.calculate_amounts()
+        serializer = RevenueTotalsSerializer(
+            {
+                "total_expected_revenue": total_expected_revenue,
+                "total_potential_revenue": total_potential_revenue,
+                "total_revenue": total_revenue,
             }
         )
         return Response(serializer.data)

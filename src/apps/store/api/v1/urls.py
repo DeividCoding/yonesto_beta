@@ -17,4 +17,5 @@ urlpatterns = [
     ),
     path("buy/create/", views.BuyClientAPIView.as_view(), name="buy-create"),
     path("buy/info/", views.BuyTotalsAPI.as_view(), name="buy-info"),
+    path("buy/revenue/", views.RevenueTotalAPI.as_view(), name="buy-revenue"),
 ]
