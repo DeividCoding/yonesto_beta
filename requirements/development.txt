@@ -8,3 +8,4 @@ mysqlclient==1.4.6
 drf-yasg
 pytz
 django-cors-headers
+babel

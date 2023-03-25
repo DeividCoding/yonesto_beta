@@ -1,5 +1,7 @@
 import pytz
+from babel.dates import format_datetime
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import generics, serializers, status
@@ -7,6 +9,7 @@ from rest_framework.response import Response
 
 from apps.store.models.product import Buy, BuyProduct, PriceProduct, Product
 from apps.store.models.users import UserClient
+from config.settings.base import EMAIL_HOST_USER
 
 
 class BuyTotalsSerializer(serializers.Serializer):
@@ -93,6 +96,7 @@ class BuyClientSerializer(serializers.Serializer):
         # Crea instancias de BuyProduct y actualiza los stocks de los productos
         buy_products = []
         products_to_update_stock = []
+        buy_message = ""
         for product_data in validated_data["products"]:
             product = product_data["product"]
             quantity = product_data["quantity"]
@@ -103,6 +107,10 @@ class BuyClientSerializer(serializers.Serializer):
             sale_price_product = price_product.sale_price
             amount_product = sale_price_product * quantity
             remaining_amount_product = amount_product
+
+            buy_message += "\t** "
+            buy_message += f"{quantity} {product.name}(${price_product} c/u)==> TOTAL ${amount_product}"
+            buy_message += "\n"
 
             if payment_client > 0:
                 remaining_amount_product -= payment_client
@@ -135,6 +143,30 @@ class BuyClientSerializer(serializers.Serializer):
         buy_instance.save()
         BuyProduct.objects.bulk_create(buy_products)
         Product.objects.bulk_update(products_to_update_stock, ["stock"])
+
+        buy_message += "\n\n"
+        buy_message += f"MONTO TOTAL DE LA COMPRA: ${buy_instance.amount}"
+
+        # Send email buy
+        if user_client.email:
+            user_name = user_client.name
+            user_email = user_client.email
+            time_zone_convetion = pytz.timezone(settings.TIME_ZONE)
+            date_purchase = buy_instance.date_purchase.astimezone(time_zone_convetion)
+            formatted_date = format_datetime(
+                date_purchase, format="EEEE dd MMMM yyyy hh:mm:ss a", locale="es"
+            )
+
+            subject = f"UNICAPP registro con exito tu compra efectuada el dia: {formatted_date}"
+            message = f"Hola: {user_name} te informamos que haz efectuado una compra a traves del sistema UNICAPP en la fecha: {formatted_date}, la informacion de tu compra es la siguiente\n"
+            message += buy_message
+            message += "\n\n\nAtt: UNICAPP"
+
+            sender_email = EMAIL_HOST_USER
+            destination_emails = [
+                user_email,
+            ]
+            send_mail(subject, message, sender_email, destination_emails)
 
         return buy_instance
 

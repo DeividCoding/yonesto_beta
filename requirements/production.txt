@@ -7,3 +7,4 @@ unipath
 drf-yasg
 pytz
 django-cors-headers
+babel

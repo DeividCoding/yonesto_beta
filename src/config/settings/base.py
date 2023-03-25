@@ -95,6 +95,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # quitar despues
 
 ROOT_URLCONF = "config.urls"
 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -176,3 +177,14 @@ REST_FRAMEWORK = {
 TIME_ZONE = "America/Mexico_City"
 USE_TZ = True
 TZ = pytz.timezone(TIME_ZONE)
+
+
+# Email
+# ------------------------------------------------------------------------------
+
+# Enabling mail delivery with Django
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = env("EMAIL")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
+EMAIL_PORT = 587

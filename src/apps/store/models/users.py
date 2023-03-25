@@ -7,6 +7,9 @@ from django.dispatch import receiver
 class UserClient(BaseModelClass):
     name = models.CharField(verbose_name="Name: ", max_length=50)
     code = models.IntegerField(verbose_name="Code: ")
+    email = models.EmailField(
+        verbose_name="Email: ", max_length=254, null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
