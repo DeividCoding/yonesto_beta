@@ -1,12 +1,19 @@
 # Django
 from django.urls import include, path
 
-# Django REST Framework
-from rest_framework.routers import DefaultRouter
-
 from . import views
 
 urlpatterns = [
+    path(
+        "users/info/<code>/",
+        views.UserClientInfoView.as_view(),
+        name="userclient-info-retrieve",
+    ),
+    path(
+        "users/unpaid-buys/<code>/",
+        views.UnPaidBuysUserClientInfoView.as_view(),
+        name="userclient-unpaidbuys-info-retrieve",
+    ),
     path(
         "product/info/<code>/",
         views.ProductInfoView.as_view(),

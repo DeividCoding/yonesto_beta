@@ -158,7 +158,7 @@ class BuyClientSerializer(serializers.Serializer):
             )
 
             subject = f"UNICAPP registro con exito tu compra efectuada el dia: {formatted_date}"
-            message = f"Hola: {user_name} te informamos que haz efectuado una compra a traves del sistema UNICAPP en la fecha: {formatted_date}, la informacion de tu compra es la siguiente\n"
+            message = f"Hola: {user_name} te informamos que haz efectuado una compra a traves del sistema UNICAPP en la fecha: {formatted_date}, la informacion de tu compra es la siguiente:\n"
             message += buy_message
             message += "\n\n\nAtt: UNICAPP"
 
