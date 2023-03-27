@@ -23,7 +23,7 @@ class ProductInfoListView(generics.ListAPIView):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
     serializer_class = ProductInfoSerializer
-    queryset = Product.available_objects.all()
+    queryset = Product.available_objects.all().order_by("name")
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()

@@ -7,12 +7,17 @@ urlpatterns = [
     path(
         "users/info/<code>/",
         views.UserClientInfoView.as_view(),
-        name="userclient-info-retrieve",
+        name="userclient-info",
     ),
     path(
         "users/unpaid-buys/<code>/",
         views.UnPaidBuysUserClientInfoView.as_view(),
-        name="userclient-unpaidbuys-info-retrieve",
+        name="userclient-unpaidbuys-info",
+    ),
+    path(
+        "users/pay-buys",
+        views.PayBuysUserClientView.as_view(),
+        name="userclient-paybuys",
     ),
     path(
         "product/info/<code>/",

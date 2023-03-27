@@ -3,6 +3,7 @@ from babel.dates import format_datetime
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import transaction
+from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
@@ -13,14 +14,12 @@ from config.settings.base import EMAIL_HOST_USER
 
 
 class BuyTotalsSerializer(serializers.Serializer):
-    # total sale money
     total_amount = serializers.FloatField()
     total_remaining_amount = serializers.FloatField()
     total_recovered = serializers.FloatField()
 
 
 class RevenueTotalsSerializer(serializers.Serializer):
-    # total sale money
     total_expected_revenue = serializers.FloatField()
     total_potential_revenue = serializers.FloatField()
     total_revenue = serializers.FloatField()
@@ -41,10 +40,6 @@ class ProductInfoSerializer(serializers.ModelSerializer):
 
 
 class BuyClientProductSerializer(serializers.ModelSerializer):
-    # debe existir un precio definido al producto
-    # quantity debe ser mayo a cero
-
-    # quantity debe ser mayor a cero
     quantity = serializers.IntegerField(min_value=1)
 
     class Meta:
@@ -108,9 +103,11 @@ class BuyClientSerializer(serializers.Serializer):
             amount_product = sale_price_product * quantity
             remaining_amount_product = amount_product
 
-            buy_message += "\t** "
-            buy_message += f"{quantity} {product.name}(${price_product} c/u)==> TOTAL ${amount_product}"
             buy_message += "\n"
+            buy_message += f"Producto: {product.name}\n"
+            buy_message += f"Cantidad: {quantity}\n"
+            buy_message += f"Precio: {sale_price_product}\n"
+            buy_message += f"Subtotal: {amount_product}\n"
 
             if payment_client > 0:
                 remaining_amount_product -= payment_client
@@ -144,11 +141,14 @@ class BuyClientSerializer(serializers.Serializer):
         BuyProduct.objects.bulk_create(buy_products)
         Product.objects.bulk_update(products_to_update_stock, ["stock"])
 
-        buy_message += "\n\n"
-        buy_message += f"MONTO TOTAL DE LA COMPRA: ${buy_instance.amount}"
-
         # Send email buy
         if user_client.email:
+            total_remaining_amount = (
+                Buy.available_objects.filter(user_client=user_client).aggregate(
+                    Sum("remaining_amount")
+                )["remaining_amount__sum"]
+                or 0
+            )
             user_name = user_client.name
             user_email = user_client.email
             time_zone_convetion = pytz.timezone(settings.TIME_ZONE)
@@ -157,10 +157,26 @@ class BuyClientSerializer(serializers.Serializer):
                 date_purchase, format="EEEE dd MMMM yyyy hh:mm:ss a", locale="es"
             )
 
-            subject = f"UNICAPP registro con exito tu compra efectuada el dia: {formatted_date}"
-            message = f"Hola: {user_name} te informamos que haz efectuado una compra a traves del sistema UNICAPP en la fecha: {formatted_date}, la informacion de tu compra es la siguiente:\n"
-            message += buy_message
-            message += "\n\n\nAtt: UNICAPP"
+            subject = f"¡Gracias por tu compra en UNICAPP, {user_name}!"
+
+            message = f"""Hola, {user_name},
+
+¡Gracias por comprar en nuestra tienda UNICAPP! Nos complace informarte que tu compra, realizada el {formatted_date}, ha sido procesada exitosamente. Aquí te compartimos los detalles de tu pedido:
+{buy_message}
+
+MONTO TOTAL DE TU COMPRA: {buy_instance.amount}
+            """
+
+            if buy_instance.remaining_amount > 0:
+                message += f"""
+Con esta compra se agregó un saldo pendiente de ${buy_instance.remaining_amount}. El total de tu saldo pendiente es de ${total_remaining_amount}. Si quieres conocer el detalle de tu historial de compras, por favor consulta la web de UNICAPP.
+            """
+
+            message += """
+Si tienes alguna pregunta o inquietud sobre tu pedido, no dudes en ponerte en contacto con el equipo UNICAPP. Estaremos encantados de ayudarte.
+
+¡Esperamos que disfrutes de tus productos y te agradecemos nuevamente por elegir UNICAPP!
+            """
 
             sender_email = EMAIL_HOST_USER
             destination_emails = [

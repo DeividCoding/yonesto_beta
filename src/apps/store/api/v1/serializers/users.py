@@ -14,6 +14,11 @@ class UserClientInfoSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "code", "email", "image", "remaining_credit")
 
 
+#####################################################################################
+# Serializer for response: InfoUnPaidBuysClientSerializer
+#####################################################################################
+
+
 class BuyProductClientSerializer(serializers.ModelSerializer):
     product_image = serializers.SerializerMethodField(source="product.image")
     product_name = serializers.ReadOnlyField(source="product.name")
@@ -34,7 +39,7 @@ class BuyProductClientSerializer(serializers.ModelSerializer):
 
     def get_product_image(self, obj):
         request = self.context.get("request")
-        if obj.product.image:
+        if obj.product.image and request:
             return request.build_absolute_uri(obj.product.image.url)
         return None
 
@@ -64,3 +69,21 @@ class InfoUnPaidBuysClientSerializer(serializers.Serializer):
     total_remaining_amount = serializers.FloatField()
     number_buys = serializers.FloatField()
     buys = BuysClientSerializer(many=True)
+
+
+#####################################################################################
+# Serializer for response: InfoBuysPaymentClientSerializer
+#####################################################################################
+
+
+class BuysPaymentClientSerializer(BuysClientSerializer):
+    prev_remaining_amount = serializers.FloatField()
+
+    class Meta(BuysClientSerializer.Meta):
+        fields = BuysClientSerializer.Meta.fields + ("prev_remaining_amount",)
+
+
+class InfoBuysPaymentClientSerializer(serializers.Serializer):
+    total_buys_paid = serializers.FloatField()
+    paid_buys = BuysPaymentClientSerializer(many=True)
+    partially_paid_buy = BuysPaymentClientSerializer()
