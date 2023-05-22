@@ -1,15 +1,17 @@
 repos:
-  - repo: https://github.com/pycqa/isort  # Import orders
+  - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
       - id: isort
-        args: [ "--profile", "black" ]
-  - repo: https://github.com/psf/black #  Reformat the code
+        args: ["--profile", "black"]
+
+  - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
       - id: black
         language_version: python3
         always_run: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
     hooks:
@@ -24,27 +26,32 @@ repos:
         exclude: "template.yaml"
       - id: debug-statements
       - id: pretty-format-json
-        exclude: src/config/settings/secret.json
+        exclude: '^src/config/settings/secret.json$|^docs/v1/config.json$'
       - id: detect-private-key
       - id: fix-encoding-pragma
         args: [--remove]
-  - repo: https://github.com/PyCQA/bandit # Check code vulnerabilites
+
+  - repo: https://github.com/PyCQA/bandit
     rev: 1.7.4
     hooks:
       - id: bandit
-  - repo: https://gitlab.com/pycqa/flake8 # Verify compliance with the PEP8 standard
+
+  - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
       - id: flake8
-  - repo: https://github.com/hadialqattan/pycln # Find and remove unused import declarations
+
+  - repo: https://github.com/hadialqattan/pycln
     rev: v1.3.2
     hooks:
       - id: pycln
-  - repo: https://github.com/compilerla/conventional-pre-commit # Verify that commit messages will have the correct format
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v1.3.0
     hooks:
       - id: conventional-pre-commit
         stages: [ commit-msg ]
         args: []
+
 default_language_version:
   python: python3.9

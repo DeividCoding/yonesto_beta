@@ -188,3 +188,8 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = env("EMAIL")
 EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
 EMAIL_PORT = 587
+
+
+# Definir la ruta en donde se guaradaran los ficheros MEDIA
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

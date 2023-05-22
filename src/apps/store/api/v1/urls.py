@@ -15,6 +15,11 @@ urlpatterns = [
         name="userclient-unpaidbuys-info",
     ),
     path(
+        "users/report-buys/<code>/",
+        views.HistoryPayBuysClientView.as_view(),
+        name="userclient-report-buys",
+    ),
+    path(
         "users/pay-buys",
         views.PayBuysUserClientView.as_view(),
         name="userclient-paybuys",

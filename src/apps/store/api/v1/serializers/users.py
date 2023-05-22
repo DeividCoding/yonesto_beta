@@ -51,6 +51,7 @@ class BuysClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Buy
         fields = (
+            "id",
             "date_purchase",
             "amount",
             "remaining_amount",

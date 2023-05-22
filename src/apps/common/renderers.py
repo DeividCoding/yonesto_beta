@@ -6,8 +6,6 @@ class MessageRenderer(renderers.JSONRenderer):
     format = "message"
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        # import pudb; pudb.set_trace()
-
         is_failed = renderer_context["response"].exception
         message = None
         if is_failed:

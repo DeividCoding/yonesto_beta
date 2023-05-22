@@ -18,9 +18,11 @@ from rest_framework.views import APIView
 
 from apps.store.models.product import Buy, BuyProduct, PriceProduct, Product
 from apps.store.models.users import UserClient
+from apps.store.utils.ticket import Ticket
 from config.settings.base import EMAIL_HOST_USER
 
 from ..serializers.users import (
+    BuysClientSerializer,
     InfoBuysPaymentClientSerializer,
     InfoUnPaidBuysClientSerializer,
     UserClientInfoSerializer,
@@ -28,8 +30,8 @@ from ..serializers.users import (
 
 
 class UserClientInfoView(generics.RetrieveAPIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserClientInfoSerializer
     queryset = UserClient.available_objects.all()
 
@@ -45,8 +47,8 @@ class UserClientInfoView(generics.RetrieveAPIView):
 
 
 class UnPaidBuysUserClientInfoView(generics.RetrieveAPIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = InfoUnPaidBuysClientSerializer
     queryset = UserClient.available_objects.all()
 
@@ -63,7 +65,6 @@ class UnPaidBuysUserClientInfoView(generics.RetrieveAPIView):
             .filter(remaining_amount__gt=0)
             .order_by("date_purchase", "remaining_amount")
         )
-
         total_remaining_amount = 0
         number_buys = 0
         for buy in buys:
@@ -81,9 +82,39 @@ class UnPaidBuysUserClientInfoView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
+class HistoryPayBuysClientView(generics.RetrieveAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = BuysClientSerializer
+    queryset = UserClient.available_objects.all()
+
+    def get_object(self):
+        code = self.kwargs.get("code")
+        return get_object_or_404(UserClient, code=code)
+
+    def get(self, request, *args, **kwargs):
+        user_client = self.get_object()
+        buys = user_client.my_buys.all().order_by("date_purchase")
+        for buy in buys:
+            buy_products = buy.my_buy_products.all().order_by("remaining_amount")
+            buy.buy_products = buy_products
+        serializer = BuysClientSerializer(list(buys), many=True)
+        if user_client.email:
+            ticket = Ticket(
+                username=f"{user_client.name}",
+                multiple_buys=serializer.data,
+                user_email=user_client.email,
+                user_name=user_client.name,
+            )
+            ticket.generate_tickets_and_send_mail(
+                filename=f"history_payments_{user_client.name}.pdf"
+            )
+        return Response(serializer.data)
+
+
 class PayBuysUserClientView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         request_body=openapi.Schema(
