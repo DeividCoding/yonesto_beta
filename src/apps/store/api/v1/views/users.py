@@ -1,3 +1,4 @@
+import threading
 from decimal import Decimal
 
 import pytz
@@ -88,6 +89,20 @@ class HistoryPayBuysClientView(generics.RetrieveAPIView):
     serializer_class = BuysClientSerializer
     queryset = UserClient.available_objects.all()
 
+    def generate_report(self, user_client, multiple_buys):
+        print("Creando reporte")
+        if user_client.email:
+            print(f"Email:{user_client.email}")
+            ticket = Ticket(
+                username=f"{user_client.name}",
+                multiple_buys=multiple_buys,
+                user_email=user_client.email,
+                user_name=user_client.name,
+            )
+            ticket.generate_tickets_and_send_mail(
+                filename=f"history_payments_{user_client.name}.pdf"
+            )
+
     def get_object(self):
         code = self.kwargs.get("code")
         return get_object_or_404(UserClient, code=code)
@@ -99,17 +114,13 @@ class HistoryPayBuysClientView(generics.RetrieveAPIView):
             buy_products = buy.my_buy_products.all().order_by("remaining_amount")
             buy.buy_products = buy_products
         serializer = BuysClientSerializer(list(buys), many=True)
-        if user_client.email:
-            ticket = Ticket(
-                username=f"{user_client.name}",
-                multiple_buys=serializer.data,
-                user_email=user_client.email,
-                user_name=user_client.name,
-            )
-            ticket.generate_tickets_and_send_mail(
-                filename=f"history_payments_{user_client.name}.pdf"
-            )
-        return Response(serializer.data)
+
+        report_thread = threading.Thread(
+            target=self.generate_report, args=(user_client, serializer.data)
+        )
+        report_thread.start()
+
+        return Response({"message": "El reporte se está generando en segundo plano."})
 
 
 class PayBuysUserClientView(APIView):
