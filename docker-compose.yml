@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db-testing:
+      image: postgres:15
+      environment:
+        POSTGRES_DB: db-local-yonesto
+        POSTGRES_PASSWORD: secret
+      ports:
+        - 5432:5432
+      networks:
+        - network-yonesto
+  api-yonesto:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db-testing
+    ports:
+      - 9595:8000
+    networks:
+      - network-yonesto
+networks:
+  network-yonesto:
+
+
+
+    

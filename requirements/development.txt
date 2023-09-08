@@ -1,12 +1,15 @@
 django
 Pillow>=9.0.0
 djangorestframework
-django-model-utils
-django-environ
+django-model-utils # para heredar de los modelos que nos proveen caracteristicas como: created, modified, is_remove
+django-environ  # para las variables de entorno de django
 unipath
-mysqlclient==1.4.6
-drf-yasg
+pre-commit # para cumplir con estandares de codigo
+drf-yasg # para la documentacion del codigo
+pudb # para hacer debugger  con import pudb; pudb.set_trace()
 pytz
-django-cors-headers
-babel
-reportlab
+django-cors-headers # administrar que dominios pueden consultar la API
+babel # fechas con datos en idioma español
+psycopg2-binary
+reportlab # para generar los reportes en pdf
+gunicorn # para hacer el deploy de django

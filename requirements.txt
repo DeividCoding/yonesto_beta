@@ -10,4 +10,6 @@ pudb # para hacer debugger  con import pudb; pudb.set_trace()
 pytz
 django-cors-headers # administrar que dominios pueden consultar la API
 babel # fechas con datos en idioma español
+psycopg2-binary
 reportlab # para generar los reportes en pdf
+gunicorn # para hacer el deploy de django
