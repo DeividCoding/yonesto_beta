@@ -38,10 +38,7 @@ class BuyProductClientSerializer(serializers.ModelSerializer):
         )
 
     def get_product_image(self, obj):
-        request = self.context.get("request")
-        if obj.product.image and request:
-            return request.build_absolute_uri(obj.product.image.url)
-        return None
+        return obj.product.image
 
 
 class BuysClientSerializer(serializers.ModelSerializer):

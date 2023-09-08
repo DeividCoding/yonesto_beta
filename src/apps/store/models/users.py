@@ -4,19 +4,13 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
-def product_directory_path(instance, filename):
-
-    # File will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return "product_{0}/{1}".format(instance.id, filename)
-
-
 class UserClient(BaseModelClass):
     name = models.CharField(verbose_name="Name: ", max_length=50)
     code = models.IntegerField(verbose_name="Code: ")
     email = models.EmailField(
         verbose_name="Email: ", max_length=254, null=True, blank=True
     )
-    image = models.ImageField(upload_to=product_directory_path, null=True, blank=True)
+    image = models.URLField(null=True, blank=True)
     maximum_credit_value = models.FloatField(
         verbose_name="Maximun credit: ", default=400
     )

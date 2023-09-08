@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
             field=models.ImageField(
                 blank=True,
                 null=True,
-                upload_to=apps.store.models.users.product_directory_path,
             ),
         ),
         migrations.AddField(
